@@ -8,7 +8,7 @@
 
 **TrucVPN** is a full-featured **VPN client** for MergeOS: local SOCKS5 + HTTP proxies, multi-region residential exits, kill-switch / split-tunnel settings, bandwidth metering, and a browser dashboard. Traffic is routed through **MRGMinner share nodes** (residential bandwidth), so sharers earn **MRG** for relayed bytes.
 
-**Product:** [mergeos-bounties/TrucVPN](https://github.com/mergeos-bounties/TrucVPN) · Share side: [MRGMinner](https://github.com/mergeos-bounties/MRGMinner) · App: [mergeos.shop](https://mergeos.shop/)
+**Product:** [mergeos-bounties/TrucVPN](https://github.com/mergeos-bounties/TrucVPN) · Share side: [MRGMinner](https://github.com/mergeos-bounties/MRGMinner) · Funded: **`prj_0515`** · App: [mergeos.shop](https://mergeos.shop/)
 
 ---
 
