@@ -1,0 +1,10 @@
+<resources>
+    <style name="Theme.TrucVPN" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowBackground">@color/truc_bg</item>
+        <item name="android:statusBarColor">@color/truc_bg</item>
+        <item name="android:navigationBarColor">@color/truc_bg</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorAccent">@color/truc_accent</item>
+    </style>
+</resources>

@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "TrucVPN",
+  "version": "0.1.0",
+  "description": "Control TrucVPN and route Chrome through the local TrucVPN proxy.",
+  "permissions": [
+    "proxy",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:17888/*",
+    "http://localhost:17888/*"
+  ],
+  "action": {
+    "default_title": "TrucVPN",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

@@ -77,7 +77,7 @@ function createSocks5Server({ host, port, getExit, meter, onLog }) {
           targetHost = buf.subarray(offset, offset + len).toString("utf8");
           offset += len;
         } else if (atyp === 0x04) {
-          // IPv6 — minimal support
+          // IPv6 - minimal support
           if (buf.length < offset + 16 + 2) {
             return;
           }

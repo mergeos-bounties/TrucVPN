@@ -1,112 +1,126 @@
 # TrucVPN
 
-[![Node.js](https://img.shields.io/badge/node-%3E%3D18.17-blue.svg)](https://nodejs.org/)
-[![Version](https://img.shields.io/badge/version-0.1.0-0E8A16.svg)](package.json)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![MRG](https://img.shields.io/badge/token-MRG-5319E7.svg)](https://scan.mergeos.shop)
-[![MergeOS](https://img.shields.io/badge/MergeOS-bounties-5319E7.svg)](https://github.com/mergeos-bounties)
+TrucVPN is a native-client VPN control surface for the MergeOS MRG bandwidth economy.
 
-**TrucVPN** is a full-featured **VPN client** for MergeOS: local SOCKS5 + HTTP proxies, multi-region residential exits, kill-switch / split-tunnel settings, bandwidth metering, and a browser dashboard. Traffic is routed through **MRGMinner share nodes** (residential bandwidth), so sharers earn **MRG** for relayed bytes.
+The Node.js core runs a local SOCKS5/HTTP proxy and a small control daemon. Native apps and browser extensions talk to that daemon to connect, disconnect, choose exits, and route browser traffic through TrucVPN.
 
-**Product:** [mergeos-bounties/TrucVPN](https://github.com/mergeos-bounties/TrucVPN) · Share side: [MRGMinner](https://github.com/mergeos-bounties/MRGMinner) · Funded: **`prj_0515`** · App: [mergeos.shop](https://mergeos.shop/)
+![Android TrucVPN protected state](docs/screenshots/android-trucvpn-protected.png)
 
----
+## What is included
 
-## Highlights
-
-| Capability | Description |
-| --- | --- |
-| **Local VPN proxies** | SOCKS5 + HTTP CONNECT on loopback for apps/browsers |
-| **Residential exits** | Discover live exits from `mrgminner share` (`/v1/exits`) |
-| **Offline demo** | Sample catalog + `direct-local` fallback when share is down |
-| **Dashboard** | Connect / disconnect / pick exit in the browser |
-| **MRG economy** | Consumer est. cost per GB; sharers earn via MRGMinner share stream |
-| **Doctor / status** | Catalog + share URL + traffic snapshot |
-
----
-
-## Architecture
-
-```text
-Browser / app
-    │  system or app proxy
-    ▼
-TrucVPN local SOCKS5 :17880  /  HTTP :17881
-    │
-    ▼
-MRGMinner share exit (residential)  ←── sharer earns MRG for bandwidth
-    │
-    ▼
-Internet
-```
-
----
+| Surface | Path | Status |
+| --- | --- | --- |
+| Local control daemon | `src/dashboard.js` | `GET/POST` JSON API for apps/extensions |
+| Android native app | `apps/android` | Java Android SDK app, no WebView |
+| iOS native app | `apps/ios` | SwiftUI app scaffold |
+| Chrome extension | `extensions/chrome` | MV3 popup + browser proxy control |
+| Firefox extension | `extensions/firefox` | WebExtension popup + browser proxy control |
 
 ## Quick start
 
 ```powershell
-cd TrucVPN
 npm test
-node .\bin\trucvpn.js version
-node .\bin\trucvpn.js demo
-node .\bin\trucvpn.js list
-node .\bin\trucvpn.js connect --exit direct-local
-node .\bin\trucvpn.js status
-node .\bin\trucvpn.js disconnect
+node .\bin\trucvpn.js daemon --host 0.0.0.0 --port 17888
 ```
 
-### With residential share (MRGMinner)
+The daemon exposes:
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /api/health` | Daemon health and metadata |
+| `GET /api/status` | Connection state and proxy ports |
+| `GET /api/exits` | Live or sample exit catalog |
+| `GET /api/config` | Public runtime config |
+| `POST /api/config` | Update runtime config |
+| `POST /api/connect` | Connect through a selected exit |
+| `POST /api/disconnect` | Disconnect current session |
+| `GET /api/proxy.pac` | PAC file for HTTP proxy routing |
+
+## Android
+
+Build the native Android app:
 
 ```powershell
-# Terminal A — share your connection, earn MRG
-cd MRGMinner
-node .\bin\mrgminner.js share start --region vn --city "Ho Chi Minh"
-
-# Terminal B — VPN client
-cd TrucVPN
-node .\bin\trucvpn.js connect --region vn
-node .\bin\trucvpn.js dashboard
+cd apps\android
+$env:ANDROID_HOME="$env:LOCALAPPDATA\Android\Sdk"
+$env:ANDROID_SDK_ROOT=$env:ANDROID_HOME
+.\gradlew.bat assembleDebug
 ```
 
-Point browser / system proxy to:
+Install on an emulator:
 
-| Protocol | Default |
-| --- | --- |
-| SOCKS5 | `127.0.0.1:17880` |
-| HTTP | `127.0.0.1:17881` |
-| Dashboard | http://127.0.0.1:17888/ |
+```powershell
+$adb="$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+& $adb -s emulator-5554 install -r .\app\build\outputs\apk\debug\app-debug.apk
+& $adb -s emulator-5554 shell am start -n shop.mergeos.trucvpn/.MainActivity
+```
 
----
+Use `http://10.0.2.2:17888` inside the Android emulator. Use your computer LAN IP when testing on a physical phone.
 
-## CLI reference
+## iOS
+
+Open the SwiftUI project in Xcode:
+
+```powershell
+start apps\ios\TrucVPN.xcodeproj
+```
+
+Use `http://127.0.0.1:17888` in the iOS simulator. Use your Mac LAN IP on a physical iPhone.
+
+## Browser extensions
+
+Start the daemon first:
+
+```powershell
+node .\bin\trucvpn.js daemon --host 127.0.0.1 --port 17888
+```
+
+Chrome:
+
+1. Open `chrome://extensions`.
+2. Enable Developer mode.
+3. Load unpacked from `extensions/chrome`.
+
+Firefox:
+
+1. Open `about:debugging#/runtime/this-firefox`.
+2. Load Temporary Add-on.
+3. Choose `extensions/firefox/manifest.json`.
+
+When connected, extensions set the browser proxy to TrucVPN's local HTTP proxy and clear it on disconnect.
+
+## CLI
 
 | Command | Purpose |
 | --- | --- |
-| `trucvpn version` | Package version |
-| `trucvpn configure` | Ports, share URL, preferred region |
-| `trucvpn list` | Exit catalog (live + sample) |
-| `trucvpn connect [--exit ID] [--region CODE]` | Start local proxies via exit |
-| `trucvpn disconnect` | Stop session |
-| `trucvpn status` | Connection + traffic + est. MRG cost |
-| `trucvpn doctor` | Health JSON |
-| `trucvpn demo` | Offline connect/disconnect smoke |
-| `trucvpn dashboard` | Local web UI |
+| `trucvpn version` | Print version JSON |
+| `trucvpn configure` | Configure ports, share URL, region, kill switch |
+| `trucvpn list` | List live/sample exits |
+| `trucvpn connect` | Start local SOCKS5/HTTP proxies |
+| `trucvpn disconnect` | Stop current session |
+| `trucvpn status` | Show connection and traffic |
+| `trucvpn doctor` | Print health report |
+| `trucvpn daemon` | Start local JSON control daemon |
 
----
-
-## Repository layout
+## Architecture
 
 ```text
-TrucVPN/
-  bin/trucvpn.js
-  src/          CLI, session, catalog, SOCKS/HTTP, dashboard
-  public/       Dashboard static UI
-  data/         Offline exit sample catalog
-  tests/        node:test suite
-  docs/BOUNTY.md
+Native app / extension
+    |
+    v
+TrucVPN control daemon :17888
+    |
+    v
+Local SOCKS5 :17880 / HTTP :17881
+    |
+    v
+MRGMinner share exit or direct fallback
+    |
+    v
+Internet
 ```
 
----
+Sharers earn MRG by running MRGMinner share nodes. Consumers route traffic through available residential exits.
 
 ## Development
 
@@ -115,16 +129,6 @@ npm test
 node .\bin\trucvpn.js doctor
 ```
 
----
-
-## MergeOS bounties
-
-**Follow** [mergeos-bounties](https://github.com/mergeos-bounties) + **star** [mergeos](https://github.com/mergeos-bounties/mergeos) and [mergeos-contracts](https://github.com/mergeos-bounties/mergeos-contracts), claim open issues, PR to **master**, earn **25–200 MRG**.
-
-See [docs/BOUNTY.md](docs/BOUNTY.md).
-
----
-
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. See `LICENSE`.

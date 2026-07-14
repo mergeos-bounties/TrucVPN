@@ -1,0 +1,258 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A1B2C3D4E5F6000000000011 /* TrucVPNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000010 /* TrucVPNApp.swift */; };
+		A1B2C3D4E5F6000000000013 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000012 /* ContentView.swift */; };
+		A1B2C3D4E5F6000000000015 /* DaemonClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000014 /* DaemonClient.swift */; };
+		A1B2C3D4E5F6000000000017 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000016 /* Models.swift */; };
+		A1B2C3D4E5F600000000001A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6000000000019 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A1B2C3D4E5F6000000000008 /* TrucVPN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TrucVPN.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D4E5F6000000000010 /* TrucVPNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrucVPNApp.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000012 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000014 /* DaemonClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaemonClient.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000016 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000018 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1B2C3D4E5F6000000000019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		A1B2C3D4E5F6000000000003 = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000005 /* TrucVPN */,
+				A1B2C3D4E5F6000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000008 /* TrucVPN.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F6000000000005 /* TrucVPN */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000010 /* TrucVPNApp.swift */,
+				A1B2C3D4E5F6000000000012 /* ContentView.swift */,
+				A1B2C3D4E5F6000000000014 /* DaemonClient.swift */,
+				A1B2C3D4E5F6000000000016 /* Models.swift */,
+				A1B2C3D4E5F600000000001B /* Resources */,
+			);
+			path = TrucVPN;
+			sourceTree = "<group>";
+		};
+		A1B2C3D4E5F600000000001B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6000000000018 /* Info.plist */,
+				A1B2C3D4E5F6000000000019 /* Assets.xcassets */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A1B2C3D4E5F6000000000002 /* TrucVPN */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1B2C3D4E5F600000000000A /* Build configuration list for PBXNativeTarget "TrucVPN" */;
+			buildPhases = (
+				A1B2C3D4E5F6000000000006 /* Sources */,
+				A1B2C3D4E5F6000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TrucVPN;
+			productName = TrucVPN;
+			productReference = A1B2C3D4E5F6000000000008 /* TrucVPN.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1B2C3D4E5F6000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					A1B2C3D4E5F6000000000002 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = A1B2C3D4E5F6000000000009 /* Build configuration list for PBXProject "TrucVPN" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A1B2C3D4E5F6000000000003;
+			productRefGroup = A1B2C3D4E5F6000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1B2C3D4E5F6000000000002 /* TrucVPN */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A1B2C3D4E5F6000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F600000000001A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A1B2C3D4E5F6000000000006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F6000000000011 /* TrucVPNApp.swift in Sources */,
+				A1B2C3D4E5F6000000000013 /* ContentView.swift in Sources */,
+				A1B2C3D4E5F6000000000015 /* DaemonClient.swift in Sources */,
+				A1B2C3D4E5F6000000000017 /* Models.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A1B2C3D4E5F600000000000B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A1B2C3D4E5F600000000000C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		A1B2C3D4E5F600000000000D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TrucVPN/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = shop.mergeos.trucvpn;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A1B2C3D4E5F600000000000E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TrucVPN/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = shop.mergeos.trucvpn;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A1B2C3D4E5F6000000000009 /* Build configuration list for PBXProject "TrucVPN" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D4E5F600000000000B /* Debug */,
+				A1B2C3D4E5F600000000000C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1B2C3D4E5F600000000000A /* Build configuration list for PBXNativeTarget "TrucVPN" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1B2C3D4E5F600000000000D /* Debug */,
+				A1B2C3D4E5F600000000000E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A1B2C3D4E5F6000000000001 /* Project object */;
+}

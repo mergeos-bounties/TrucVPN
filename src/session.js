@@ -15,7 +15,7 @@ function getActive() {
 
 async function connect({ exitId, region, json } = {}) {
   if (active) {
-    throw new Error("already connected — disconnect first");
+    throw new Error("already connected - disconnect first");
   }
   const config = loadConfig();
   const exits = await listExits(config);
@@ -35,7 +35,7 @@ async function connect({ exitId, region, json } = {}) {
     if (!ok) {
       effectiveExit = {
         id: `${exit.id}+direct-fallback`,
-        name: `${exit.name} (direct fallback — start mrgminner share for residential)`,
+        name: `${exit.name} (direct fallback)`,
         protocol: "direct",
         region: exit.region,
         residential: false,
@@ -114,7 +114,7 @@ async function connect({ exitId, region, json } = {}) {
     console.log(`  SOCKS5  ${config.localSocksHost}:${config.localSocksPort}`);
     console.log(`  HTTP    ${config.localHttpHost}:${config.localHttpPort}`);
     if (effectiveExit.source === "direct-fallback") {
-      console.log("  Note: MRGMinner share offline — using direct dial. Run: mrgminner share start");
+      console.log("  Note: MRGMinner share offline - using direct dial. Run: mrgminner share start");
     }
   }
   return session;

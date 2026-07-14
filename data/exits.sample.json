@@ -3,7 +3,7 @@
   "exits": [
     {
       "id": "mock-vn-hcm",
-      "name": "Vietnam · Ho Chi Minh",
+      "name": "Vietnam - Ho Chi Minh",
       "region": "vn",
       "city": "Ho Chi Minh",
       "latency_ms": 28,
@@ -16,7 +16,7 @@
     },
     {
       "id": "mock-vn-hn",
-      "name": "Vietnam · Hanoi",
+      "name": "Vietnam - Hanoi",
       "region": "vn",
       "city": "Hanoi",
       "latency_ms": 32,
@@ -29,7 +29,7 @@
     },
     {
       "id": "mock-us-sfo",
-      "name": "United States · San Francisco",
+      "name": "United States - San Francisco",
       "region": "us",
       "city": "San Francisco",
       "latency_ms": 120,
@@ -42,7 +42,7 @@
     },
     {
       "id": "mock-eu-fra",
-      "name": "Germany · Frankfurt",
+      "name": "Germany - Frankfurt",
       "region": "eu",
       "city": "Frankfurt",
       "latency_ms": 95,
@@ -68,7 +68,7 @@
     },
     {
       "id": "direct-local",
-      "name": "Direct (no upstream — local proxy only)",
+      "name": "Direct (no upstream - local proxy only)",
       "region": "local",
       "city": "Local",
       "latency_ms": 1,

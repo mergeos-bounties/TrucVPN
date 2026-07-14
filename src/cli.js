@@ -3,7 +3,7 @@
 const { loadConfig, saveConfig } = require("./config");
 const { listExits, pickExit, findExit, sampleExits } = require("./catalog");
 const session = require("./session");
-const { startDashboard } = require("./dashboard");
+const { startControlDaemon } = require("./dashboard");
 const { formatBytes } = require("./meter");
 const pkg = require("../package.json");
 
@@ -31,9 +31,11 @@ async function main(argv) {
       return statusCommand(flags);
     case "demo":
       return demoCommand(flags);
+    case "daemon":
+    case "serve":
     case "dashboard":
     case "gui":
-      return dashboardCommand(flags);
+      return daemonCommand(flags);
     case "doctor":
       return doctorCommand(flags);
     default:
@@ -42,24 +44,24 @@ async function main(argv) {
 }
 
 function help() {
-  console.log(`TrucVPN ${pkg.version} — residential VPN client (MRGMinner share exits)
+  console.log(`TrucVPN ${pkg.version} - residential VPN client (MRGMinner share exits)
 
 Usage:
   trucvpn version
-  trucvpn configure [--socks-port N] [--http-port N] [--share-url URL] [--region CODE]
+  trucvpn configure [--socks-port N] [--http-port N] [--dashboard-host HOST] [--dashboard-port N] [--share-url URL] [--region CODE]
   trucvpn list [--json]
   trucvpn connect [--exit ID] [--region CODE] [--json]
   trucvpn disconnect [--json]
   trucvpn status [--json]
   trucvpn doctor
   trucvpn demo
-  trucvpn dashboard [--port N]
+  trucvpn daemon [--host HOST] [--port N]
 
 Architecture:
-  App/browser → local SOCKS5/HTTP (TrucVPN) → MRGMinner share exit (residential) → Internet
+  Native apps/extensions -> TrucVPN control daemon -> local SOCKS5/HTTP -> MRGMinner share exit -> Internet
   Sharers earn MRG for bandwidth via: mrgminner share start
 
-MergeOS: https://github.com/mergeos-bounties · Token: MRG
+MergeOS: https://github.com/mergeos-bounties - Token: MRG
 `);
 }
 
@@ -70,6 +72,12 @@ function configure(flags) {
   }
   if (flags["http-port"]) {
     updates.localHttpPort = Number(flags["http-port"]);
+  }
+  if (flags["dashboard-host"]) {
+    updates.dashboardHost = String(flags["dashboard-host"]);
+  }
+  if (flags["dashboard-port"]) {
+    updates.dashboardPort = Number(flags["dashboard-port"]);
   }
   if (flags["share-url"]) {
     updates.shareDiscoveryUrl = String(flags["share-url"]);
@@ -144,7 +152,7 @@ async function statusCommand(flags) {
   console.log(`  socks  ${s.socks.host}:${s.socks.port}`);
   console.log(`  http   ${s.http.host}:${s.http.port}`);
   console.log(
-    `  traffic in=${formatBytes(s.traffic.bytes_in)} out=${formatBytes(s.traffic.bytes_out)} mrg≈${s.traffic.estimated_mrg_cost}`
+    `  traffic in=${formatBytes(s.traffic.bytes_in)} out=${formatBytes(s.traffic.bytes_out)} mrg~${s.traffic.estimated_mrg_cost}`
   );
 }
 
@@ -168,35 +176,34 @@ async function demoCommand(flags) {
   const cfg = loadConfig();
   const exits = await listExits(cfg);
   const pick = pickExit(exits, "local") || exits[0];
-  // Prefer direct for offline demo reliability
   const direct = findExit(exits, "direct-local") || pick;
   console.log("TrucVPN demo");
   console.log(`  catalog exits: ${exits.length}`);
-  console.log(`  connecting via ${direct.id} …`);
+  console.log(`  connecting via ${direct.id} ...`);
   const s = await session.connect({ exitId: direct.id, json: true });
   const st = s.status();
   console.log(`  SOCKS5 ${st.socks.host}:${st.socks.port}`);
   console.log(`  HTTP   ${st.http.host}:${st.http.port}`);
-  // brief local probe through proxy path is optional; disconnect after status
   if (!flags.keep) {
     await session.disconnect();
     console.log("  demo complete (disconnected). For live share: mrgminner share start && trucvpn connect");
   } else {
-    console.log("  keeping session (--keep). Ctrl+C to stop after dashboard if needed.");
+    console.log("  keeping session (--keep). Ctrl+C to stop after daemon if needed.");
   }
 }
 
-async function dashboardCommand(flags) {
+async function daemonCommand(flags) {
+  const host = flags.host ? String(flags.host) : undefined;
   const port = flags.port ? Number(flags.port) : undefined;
-  const { url } = await startDashboard({ port });
-  console.log(`TrucVPN dashboard: ${url}`);
+  const { url } = await startControlDaemon({ host, port });
+  console.log(`TrucVPN control daemon: ${url}`);
+  console.log("Native apps and browser extensions use this local API.");
   console.log("Press Ctrl+C to stop.");
   await new Promise(() => {});
 }
 
 function redact(cfg) {
-  const c = { ...cfg };
-  return c;
+  return { ...cfg };
 }
 
 function parseFlags(argv) {

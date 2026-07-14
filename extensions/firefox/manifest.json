@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "name": "TrucVPN",
+  "version": "0.1.0",
+  "description": "Control TrucVPN and route Firefox through the local TrucVPN proxy.",
+  "permissions": [
+    "proxy",
+    "storage",
+    "http://127.0.0.1:17888/*",
+    "http://localhost:17888/*"
+  ],
+  "browser_action": {
+    "default_title": "TrucVPN",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "trucvpn@mergeos.shop"
+    }
+  }
+}

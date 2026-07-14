@@ -109,7 +109,7 @@ function createHttpProxyServer({ host, port, getExit, meter, onLog }) {
       });
   });
 
-  // keep linter happy — net used for type identity
+  // keep linter happy - net used for type identity
   void net;
 
   return new Promise((resolve, reject) => {

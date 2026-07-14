@@ -6,3 +6,10 @@ dist/
 coverage/
 .env
 .env.*
+
+# Native build output
+.gradle/
+**/.gradle/
+**/build/
+DerivedData/
+*.xcuserstate

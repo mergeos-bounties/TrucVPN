@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrucVPN</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main class="panel">
+    <header>
+      <div>
+        <h1>TrucVPN</h1>
+        <p>Firefox proxy control</p>
+      </div>
+      <span id="state-dot" class="dot"></span>
+    </header>
+
+    <section class="status">
+      <strong id="state-label">Checking</strong>
+      <dl id="status-meta"></dl>
+      <div class="actions">
+        <button id="connect" type="button">Connect</button>
+        <button id="disconnect" type="button" class="secondary">Disconnect</button>
+      </div>
+    </section>
+
+    <label class="field">
+      <span>Daemon URL</span>
+      <input id="daemon-url" type="url" spellcheck="false">
+    </label>
+
+    <section>
+      <h2>Exits</h2>
+      <div id="exits" class="exits"></div>
+    </section>
+
+    <p id="error" class="error"></p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>

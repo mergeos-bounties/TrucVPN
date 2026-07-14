@@ -14,7 +14,7 @@ function sampleExits() {
   return [
     {
       id: "mock-vn-hcm",
-      name: "Vietnam · Ho Chi Minh",
+      name: "Vietnam - Ho Chi Minh",
       region: "vn",
       city: "Ho Chi Minh",
       latency_ms: 28,
@@ -27,7 +27,7 @@ function sampleExits() {
     },
     {
       id: "mock-us-sfo",
-      name: "United States · San Francisco",
+      name: "United States - San Francisco",
       region: "us",
       city: "San Francisco",
       latency_ms: 120,
@@ -53,7 +53,7 @@ function sampleExits() {
     },
     {
       id: "direct-local",
-      name: "Direct (no upstream — local proxy only)",
+      name: "Direct (no upstream - local proxy only)",
       region: "local",
       city: "Local",
       latency_ms: 1,
@@ -67,7 +67,7 @@ function sampleExits() {
 
 /**
  * Discover live exits from an MRGMinner share node.
- * GET {shareUrl}/v1/exits → { exits: [...] }
+ * GET {shareUrl}/v1/exits -> { exits: [...] }
  */
 async function discoverShareExits(shareUrl, { timeoutMs = 2500 } = {}) {
   const base = String(shareUrl || "").replace(/\/$/, "");
