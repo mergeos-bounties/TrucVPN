@@ -4,6 +4,10 @@ TrucVPN is a native-client VPN control surface for the MergeOS MRG bandwidth eco
 
 The Node.js core runs a local SOCKS5/HTTP proxy and a small control daemon. Native apps and browser extensions talk to that daemon to connect, disconnect, choose exits, and route browser traffic through TrucVPN.
 
+## Native UI preview
+
+The Android client is a real native app with a polished control surface for daemon status, local proxy ports, MRG metering, and residential exit selection.
+
 ![Android TrucVPN protected state](docs/screenshots/android-trucvpn-protected.png)
 
 ## What is included
