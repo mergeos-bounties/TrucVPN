@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TrucVPN</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <h1>TrucVPN</h1>
+      <p class="sub">Residential VPN via MRGMinner bandwidth share · MergeOS MRG economy</p>
+    </header>
+
+    <section class="card status" id="status-card">
+      <div class="row">
+        <span class="dot" id="dot"></span>
+        <strong id="state-label">Checking…</strong>
+      </div>
+      <dl id="status-meta"></dl>
+      <div class="actions">
+        <button id="btn-connect" type="button">Connect</button>
+        <button id="btn-disconnect" type="button" class="ghost">Disconnect</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Exits</h2>
+      <p class="hint">Live exits come from <code>mrgminner share</code>. Offline sample catalog is used as fallback.</p>
+      <div id="exits" class="exits"></div>
+    </section>
+
+    <section class="card">
+      <h2>How it works</h2>
+      <ol>
+        <li>Sharers run <code>mrgminner share start</code> and earn MRG for relayed residential traffic.</li>
+        <li>TrucVPN dials a share exit (SOCKS5 / HTTP CONNECT).</li>
+        <li>Apps use local SOCKS5/HTTP proxy — full-feature client without a kernel driver.</li>
+      </ol>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

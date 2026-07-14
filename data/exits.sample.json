@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "exits": [
+    {
+      "id": "mock-vn-hcm",
+      "name": "Vietnam · Ho Chi Minh",
+      "region": "vn",
+      "city": "Ho Chi Minh",
+      "latency_ms": 28,
+      "load": 0.22,
+      "protocol": "socks5",
+      "host": "127.0.0.1",
+      "port": 17890,
+      "residential": true,
+      "source": "mrgminner-share-mock"
+    },
+    {
+      "id": "mock-vn-hn",
+      "name": "Vietnam · Hanoi",
+      "region": "vn",
+      "city": "Hanoi",
+      "latency_ms": 32,
+      "load": 0.3,
+      "protocol": "socks5",
+      "host": "127.0.0.1",
+      "port": 17890,
+      "residential": true,
+      "source": "mrgminner-share-mock"
+    },
+    {
+      "id": "mock-us-sfo",
+      "name": "United States · San Francisco",
+      "region": "us",
+      "city": "San Francisco",
+      "latency_ms": 120,
+      "load": 0.41,
+      "protocol": "socks5",
+      "host": "127.0.0.1",
+      "port": 17890,
+      "residential": true,
+      "source": "mrgminner-share-mock"
+    },
+    {
+      "id": "mock-eu-fra",
+      "name": "Germany · Frankfurt",
+      "region": "eu",
+      "city": "Frankfurt",
+      "latency_ms": 95,
+      "load": 0.35,
+      "protocol": "http-connect",
+      "host": "127.0.0.1",
+      "port": 17891,
+      "residential": true,
+      "source": "mrgminner-share-mock"
+    },
+    {
+      "id": "mock-sg-1",
+      "name": "Singapore",
+      "region": "sg",
+      "city": "Singapore",
+      "latency_ms": 45,
+      "load": 0.18,
+      "protocol": "http-connect",
+      "host": "127.0.0.1",
+      "port": 17891,
+      "residential": true,
+      "source": "mrgminner-share-mock"
+    },
+    {
+      "id": "direct-local",
+      "name": "Direct (no upstream — local proxy only)",
+      "region": "local",
+      "city": "Local",
+      "latency_ms": 1,
+      "load": 0,
+      "protocol": "direct",
+      "residential": false,
+      "source": "local"
+    }
+  ]
+}

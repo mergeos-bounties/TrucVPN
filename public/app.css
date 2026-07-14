@@ -1,0 +1,77 @@
+:root {
+  --bg: #0b1220;
+  --card: #111827;
+  --line: #1e293b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #6366f1;
+  --ok: #22c55e;
+  --bad: #f87171;
+  --warn: #fbbf24;
+  font-family: system-ui, Segoe UI, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(1200px 600px at 10% -10%, #1e1b4b 0%, var(--bg) 55%);
+  color: var(--text);
+  min-height: 100vh;
+}
+.shell { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+header h1 { margin: 0; font-size: 1.85rem; letter-spacing: -0.02em; }
+.sub { color: var(--muted); margin: 0.35rem 0 1.5rem; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.15rem 1.25rem;
+  margin-bottom: 1rem;
+}
+.card h2 { margin: 0 0 0.75rem; font-size: 1.05rem; }
+.row { display: flex; align-items: center; gap: 0.6rem; }
+.dot {
+  width: 12px; height: 12px; border-radius: 999px;
+  background: var(--muted);
+  box-shadow: 0 0 0 4px rgba(148,163,184,0.15);
+}
+.dot.on { background: var(--ok); box-shadow: 0 0 0 4px rgba(34,197,94,0.18); }
+.dot.off { background: var(--bad); box-shadow: 0 0 0 4px rgba(248,113,113,0.15); }
+dl { display: grid; grid-template-columns: 140px 1fr; gap: 0.35rem 0.75rem; margin: 1rem 0; color: var(--muted); font-size: 0.92rem; }
+dt { color: #64748b; }
+dd { margin: 0; color: var(--text); }
+.actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+button {
+  background: var(--accent);
+  color: white;
+  border: 0;
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+button.ghost { background: transparent; border: 1px solid var(--line); color: var(--text); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+.exits { display: grid; gap: 0.55rem; }
+.exit {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 1rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0f172a;
+  cursor: pointer;
+}
+.exit:hover, .exit.selected { border-color: var(--accent); }
+.exit .meta { color: var(--muted); font-size: 0.85rem; }
+.badge {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: #1e293b;
+  color: #cbd5e1;
+}
+.badge.res { background: #14532d; color: #bbf7d0; }
+.hint { color: var(--muted); font-size: 0.9rem; }
+code { background: #0f172a; padding: 0.1rem 0.35rem; border-radius: 6px; }
+ol { color: var(--muted); line-height: 1.55; padding-left: 1.2rem; }

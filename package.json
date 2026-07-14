@@ -1,0 +1,32 @@
+{
+  "name": "trucvpn",
+  "displayName": "TrucVPN",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TrucVPN — full-featured VPN client routed through MRGMinner residential share exits; MergeOS MRG bandwidth economy.",
+  "main": "./src/cli.js",
+  "bin": {
+    "trucvpn": "./bin/trucvpn.js"
+  },
+  "scripts": {
+    "start": "node ./bin/trucvpn.js",
+    "demo": "node ./bin/trucvpn.js demo",
+    "test": "node --test",
+    "dashboard": "node ./bin/trucvpn.js dashboard"
+  },
+  "keywords": [
+    "vpn",
+    "proxy",
+    "socks5",
+    "residential",
+    "mrg",
+    "mrgminner",
+    "mergeos",
+    "bandwidth"
+  ],
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "license": "MIT",
+  "author": "MergeOS / ThanhTrucSolutions"
+}
