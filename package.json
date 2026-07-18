@@ -1,37 +1,52 @@
 {
-  "name": "trucvpn",
-  "displayName": "TrucVPN",
-  "version": "0.1.0",
-  "private": true,
-  "description": "TrucVPN native clients, browser extensions, and local control daemon for MRGMinner residential exits.",
-  "main": "./src/cli.js",
-  "bin": {
-    "trucvpn": "./bin/trucvpn.js"
-  },
+  "name": "trucvpn-exit-auth",
+  "version": "1.0.0",
+  "description": "TrucVPN exit node authentication token handshake system",
+ "main": "src/handshake/index.ts",
+  "types": "src/handshake/index.ts",
   "scripts": {
-    "start": "node ./bin/trucvpn.js",
-    "demo": "node ./bin/trucvpn.js demo",
-    "test": "node --test",
-    "daemon": "node ./bin/trucvpn.js daemon",
-    "dashboard": "node ./bin/trucvpn.js daemon"
+    "test": "jest",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [
-    "vpn",
-    "proxy",
-    "socks5",
-    "residential",
-    "mrg",
-    "mrgminner",
-    "mergeos",
-    "bandwidth",
-    "android",
-    "ios",
-    "chrome-extension",
-    "firefox-extension"
+    "trucvpn",
+    "auth",
+    "exit-node",
+    "token"
   ],
-  "engines": {
-    "node": ">=18.17.0"
-  },
+  "author": "",
   "license": "MIT",
-  "author": "MergeOS / ThanhTrucSolutions"
+  "dependencies": {
+    "crypto": "2.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0",
+    "@types/jest": "^29.0.0"
+  },
+  "files": [
+    "src/**/*.ts",
+    "dist/**/*.js",
+    "dist/**/*.d.ts"
+  ],
+  "keywords": [
+    "trucvpn",
+    "auth",
+    "exit-node",
+    "token",
+    "security"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mergeos-bounties/TrucVPN"
+  },
+  "bugs": {
+    "url": "https://github.com/mergeos-bounties/TrucVPN/issues"
+  },
+  "homepage": "https://github.com/mergeos-bounties/TrucVPN#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
