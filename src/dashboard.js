@@ -5,6 +5,7 @@ const os = require("node:os");
 const { loadConfig, saveConfig } = require("./config");
 const session = require("./session");
 const { listExits } = require("./catalog");
+const handshake = require("./handshake");
 const pkg = require("../package.json");
 
 async function startDashboard({ host, port } = {}) {
@@ -44,7 +45,8 @@ async function startControlDaemon({ host, port } = {}) {
             "POST /api/config",
             "POST /api/connect",
             "POST /api/disconnect",
-            "GET /api/proxy.pac"
+            "GET /api/proxy.pac",
+            "POST /api/handshake"
           ]
         });
       }
@@ -75,6 +77,9 @@ async function startControlDaemon({ host, port } = {}) {
       }
       if (url.pathname === "/api/proxy.pac") {
         return proxyPac(res, loadConfig());
+      }
+      if (url.pathname === "/api/handshake" && req.method === "POST") {
+        return json(res, handleHandshake(await readJsonBody(req), loadConfig()));
       }
       return error(res, 404, "not found");
     } catch (err) {
@@ -140,8 +145,36 @@ async function readJsonBody(req) {
   return JSON.parse(body);
 }
 
-function normalizeConfig(data) {
-  const updates = {};
+/**
+ * Control-plane handler for the exit auth token handshake.
+ * Drives the client->exit->client flow used to authorize a consumer against a
+ * residential exit. The shared secret is taken from the configured share
+ * discovery URL's secret (env/secret store); falls back to a demo secret so
+ * the flow is exercisable end-to-end against the local daemon.
+ */
+function handleHandshake(data, config) {
+  const secret =
+    process.env.TRUCVPN_SHARE_SECRET ||
+    config.shareSecret ||
+    "demo-shared-secret";
+  const role = String(data.role || "client").toLowerCase();
+  const ttlMs = data.ttl_ms != null ? Number(data.ttl_ms) : undefined;
+
+  if (role === "client") {
+    const r = handshake.clientBegin({ sharedSecret: secret, ttlMs });
+    return { ok: true, role: "client", token: r.token, client_nonce: r.clientNonce, expiry_ms: r.expiryMs };
+  }
+  if (role === "exit") {
+    if (!data.client_token) {
+      throw new Error("exit role requires client_token");
+    }
+    const r = handshake.exitAccept({ sharedSecret: secret, clientToken: data.client_token, ttlMs });
+    return { ok: true, role: "exit", client_nonce: r.clientNonce, exit_nonce: r.exitNonce, exit_token: r.exitToken, expiry_ms: r.expiryMs };
+  }
+  throw new Error("role must be 'client' or 'exit'");
+}
+
+function normalizeConfig(data) {  const updates = {};
   const pairs = [
     ["local_socks_port", "localSocksPort"],
     ["localSocksPort", "localSocksPort"],
