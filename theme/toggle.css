@@ -1,0 +1,5 @@
+:root{--bg:#fff;--fg:#1a1a2e;--accent:#0ea5e9;--card:#f8fafc;--border:#e2e8f0}
+[data-theme=dark]{--bg:#0f172a;--fg:#e2e8f0;--accent:#38bdf8;--card:#1e293b;--border:#334155}
+body{background:var(--bg);color:var(--fg);transition:background .3s,color .3s}
+.theme-toggle{position:fixed;top:1rem;right:1rem;cursor:pointer;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.5rem 1rem;font-size:14px}
+.theme-toggle:hover{background:var(--accent);color:var(--bg)}
