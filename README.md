@@ -106,6 +106,21 @@ When connected, extensions set the browser proxy to TrucVPN's local HTTP proxy a
 | `trucvpn doctor` | Print health report |
 | `trucvpn daemon` | Start local JSON control daemon |
 
+## Windows System Proxy
+
+To quickly enable or disable the Windows system proxy to route through TrucVPN's local HTTP proxy:
+
+```powershell
+# Enable proxy
+.\scripts\set-system-proxy.ps1 -Enable
+
+# Disable proxy
+.\scripts\set-system-proxy.ps1 -Disable
+
+# Dry-run
+.\scripts\set-system-proxy.ps1 -Enable -DryRun
+```
+
 ## Architecture
 
 ```text
