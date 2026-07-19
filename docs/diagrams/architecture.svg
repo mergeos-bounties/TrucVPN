@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="960" height="520" font-family="Segoe UI,Arial,sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <style>
+      .box { fill: #f1f5f9; stroke: #475569; stroke-width: 1.5; rx: 8; }
+      .core { fill: #e0e7ff; stroke: #6366f1; }
+      .exit { fill: #dcfce7; stroke: #16a34a; }
+      .label { font-size: 13px; fill: #1e293b; text-anchor: middle; font-weight: 600; }
+      .sub { font-size: 11px; fill: #64748b; text-anchor: middle; }
+      .arrow { stroke: #475569; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+      .title { font-size: 18px; fill: #1e293b; font-weight: 700; text-anchor: middle; }
+    </style>
+  </defs>
+
+  <text x="480" y="30" class="title">TrucVPN Architecture — Share + Client</text>
+
+  <!-- Native Apps -->
+  <rect x="20" y="55" width="150" height="65" class="box"/>
+  <text x="95" y="80" class="label">Android / iOS App</text>
+  <text x="95" y="100" class="sub">Java / SwiftUI</text>
+
+  <rect x="20" y="135" width="150" height="65" class="box"/>
+  <text x="95" y="160" class="label">Browser Extension</text>
+  <text x="95" y="180" class="sub">Chrome MV3 / Firefox</text>
+
+  <!-- Control Daemon -->
+  <rect x="250" y="95" width="170" height="90" class="box core"/>
+  <text x="335" y="125" class="label">Control Daemon</text>
+  <text x="335" y="145" class="sub">:17888 HTTP JSON API</text>
+  <text x="335" y="160" class="sub">/api/connect · /api/status</text>
+
+  <!-- Local Proxy -->
+  <rect x="470" y="55" width="160" height="70" class="box core"/>
+  <text x="550" y="80" class="label">SOCKS5 Proxy</text>
+  <text x="550" y="100" class="sub">:1080</text>
+
+  <rect x="470" y="140" width="160" height="70" class="box core"/>
+  <text x="550" y="165" class="label">HTTP CONNECT Proxy</text>
+  <text x="550" y="185" class="sub">:8080</text>
+
+  <!-- MRGMinner Share -->
+  <rect x="690" y="55" width="170" height="70" class="box exit"/>
+  <text x="775" y="80" class="label">MRGMinner Share</text>
+  <text x="775" y="100" class="sub">Exit Node (residential)</text>
+
+  <rect x="690" y="140" width="170" height="70" class="box exit"/>
+  <text x="775" y="165" class="label">Internet</text>
+  <text x="775" y="185" class="sub">via share exit IP</text>
+
+  <!-- Arrows -->
+  <line x1="170" y1="87" x2="250" y2="120" class="arrow"/>
+  <line x1="170" y1="167" x2="250" y2="150" class="arrow"/>
+  <line x1="420" y1="120" x2="470" y2="90" class="arrow"/>
+  <line x1="420" y1="160" x2="470" y2="175" class="arrow"/>
+  <line x1="630" y1="90" x2="690" y2="90" class="arrow"/>
+  <line x1="630" y1="175" x2="690" y2="175" class="arrow"/>
+
+  <!-- Metering -->
+  <rect x="250" y="250" width="170" height="55" class="box"/>
+  <text x="335" y="275" class="label">MRG Meter</text>
+  <text x="335" y="293" class="sub">bytes in/out tracking</text>
+  <line x1="335" y1="185" x2="335" y2="250" class="arrow" stroke-dasharray="4,3"/>
+
+  <!-- Config -->
+  <rect x="470" y="250" width="160" height="55" class="box"/>
+  <text x="550" y="275" class="label">Config Store</text>
+  <text x="550" y="293" class="sub">~/.trucvpn/config.json</text>
+  <line x1="550" y1="210" x2="550" y2="250" class="arrow" stroke-dasharray="4,3"/>
+
+  <!-- Catalog -->
+  <rect x="690" y="250" width="170" height="55" class="box"/>
+  <text x="775" y="275" class="label">Exit Catalog</text>
+  <text x="775" y="293" class="sub">data/exits.sample.json</text>
+  <line x1="775" y1="210" x2="775" y2="250" class="arrow" stroke-dasharray="4,3"/>
+
+  <!-- Legend -->
+  <rect x="250" y="350" width="610" height="120" fill="#fafafa" stroke="#e2e8f0" rx="8"/>
+  <text x="270" y="375" class="label" text-anchor="start" font-size="14">Data Flow</text>
+  <text x="270" y="400" class="sub" text-anchor="start">1. App/Extension → Control Daemon (:17888) selects exit</text>
+  <text x="270" y="418" class="sub" text-anchor="start">2. Daemon starts local SOCKS5 (:1080) + HTTP CONNECT (:8080) proxy</text>
+  <text x="270" y="436" class="sub" text-anchor="start">3. Proxy tunnels traffic to MRGMinner share exit (residential IP)</text>
+  <text x="270" y="454" class="sub" text-anchor="start">4. Meter logs bytes → MRG earnings for sharer</text>
+</svg>
