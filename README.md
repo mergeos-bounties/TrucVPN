@@ -93,6 +93,34 @@ Firefox:
 
 When connected, extensions set the browser proxy to TrucVPN's local HTTP proxy and clear it on disconnect.
 
+## Browser split-tunnel examples
+
+Keep the control daemon bound to localhost and choose ports explicitly so the
+browser settings below match the running TrucVPN instance:
+
+```powershell
+node .\bin\trucvpn.js configure --socks-port 17880 --http-port 17881 --dashboard-host 127.0.0.1 --dashboard-port 17888 --region auto
+node .\bin\trucvpn.js daemon --host 127.0.0.1 --port 17888
+```
+
+Choose one browser policy:
+
+- **Extension-only routing:** load the Chrome or Firefox extension described
+  above. The extension routes that browser through TrucVPN's local HTTP proxy;
+  applications outside the browser continue to use their normal connection.
+- **Dedicated browser profile:** set only that profile's HTTP and HTTPS proxy
+  to `127.0.0.1:17881`. Leave the operating-system proxy disabled so other
+  browsers and applications remain direct.
+- **PAC policy:** set the browser's automatic proxy URL to
+  `http://127.0.0.1:17888/api/proxy.pac`. The generated policy sends localhost,
+  `127.0.0.1`, and plain host names directly, then uses the TrucVPN HTTP proxy
+  with a direct fallback for other requests.
+
+Confirm the local control service is reachable at the
+[TrucVPN dashboard health endpoint](http://127.0.0.1:17888/api/health), then use
+`trucvpn status` to verify the active proxy ports. These examples use only CLI
+flags implemented by `trucvpn configure` and `trucvpn daemon`.
+
 ## CLI
 
 | Command | Purpose |
