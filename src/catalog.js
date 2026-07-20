@@ -147,10 +147,30 @@ function findExit(exits, idOrName) {
   );
 }
 
+/** Summarize an exit catalog by normalized region code. */
+function summarizeRegions(exits) {
+  const regions = new Map();
+  for (const exit of exits || []) {
+    const region = String(exit.region || "unknown").trim().toLowerCase() || "unknown";
+    const current = regions.get(region) || {
+      region,
+      exits: 0,
+      residential: 0
+    };
+    current.exits += 1;
+    if (exit.residential) {
+      current.residential += 1;
+    }
+    regions.set(region, current);
+  }
+  return [...regions.values()].sort((a, b) => a.region.localeCompare(b.region));
+}
+
 module.exports = {
   sampleExits,
   discoverShareExits,
   listExits,
   pickExit,
-  findExit
+  findExit,
+  summarizeRegions
 };
