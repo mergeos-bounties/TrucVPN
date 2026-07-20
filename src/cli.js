@@ -1,7 +1,7 @@
 "use strict";
 
 const { loadConfig, saveConfig } = require("./config");
-const { listExits, pickExit, findExit, sampleExits } = require("./catalog");
+const { listExits, pickExit, findExit, sampleExits, summarizeRegions } = require("./catalog");
 const session = require("./session");
 const { startControlDaemon } = require("./dashboard");
 const { formatBytes } = require("./meter");
@@ -23,6 +23,8 @@ async function main(argv) {
     case "list":
     case "exits":
       return listCommand(flags);
+    case "regions":
+      return regionsCommand(flags);
     case "connect":
       return connectCommand(flags);
     case "disconnect":
@@ -50,6 +52,7 @@ Usage:
   trucvpn version
   trucvpn configure [--socks-port N] [--http-port N] [--dashboard-host HOST] [--dashboard-port N] [--share-url URL] [--region CODE]
   trucvpn list [--json]
+  trucvpn regions [--json]
   trucvpn connect [--exit ID] [--region CODE] [--json]
   trucvpn disconnect [--json]
   trucvpn status [--json]
@@ -93,6 +96,22 @@ function configure(flags) {
   }
   const cfg = saveConfig(updates);
   console.log(JSON.stringify({ ok: true, config: redact(cfg) }, null, 2));
+}
+
+async function regionsCommand(flags) {
+  const cfg = loadConfig();
+  const exits = await listExits(cfg);
+  const regions = summarizeRegions(exits);
+  if (flags.json) {
+    console.log(JSON.stringify({ regions }, null, 2));
+    return;
+  }
+  console.log(`Regions (${regions.length})  exits=${exits.length}`);
+  for (const region of regions) {
+    console.log(
+      `  ${region.region.padEnd(8)}  ${String(region.exits).padStart(3)} exits  ${String(region.residential).padStart(3)} residential`
+    );
+  }
 }
 
 async function listCommand(flags) {
