@@ -15,6 +15,7 @@ The Android client is a real native app with a polished control surface for daem
 | Surface | Path | Status |
 | --- | --- | --- |
 | Local control daemon | `src/dashboard.js` | `GET/POST` JSON API for apps/extensions |
+| Exit load balancer | `src/balancer.js` | Spreads new connections by load/latency ([docs](docs/load-balancing.md)) |
 | Android native app | `apps/android` | Java Android SDK app, no WebView |
 | iOS native app | `apps/ios` | SwiftUI app scaffold |
 | Chrome extension | `extensions/chrome` | MV3 popup + browser proxy control |
@@ -126,8 +127,9 @@ flags implemented by `trucvpn configure` and `trucvpn daemon`.
 | Command | Purpose |
 | --- | --- |
 | `trucvpn version` | Print version JSON |
-| `trucvpn configure` | Configure ports, share URL, region, kill switch |
-| `trucvpn list` | List live/sample exits |
+| `trucvpn configure` | Configure ports, share URL, region, kill switch, balancing |
+| `trucvpn list` | List live/sample exits (`--balance` for the scored view) |
+| `trucvpn balance` | Show how new connections spread across exits |
 | `trucvpn connect` | Start local SOCKS5/HTTP proxies |
 | `trucvpn disconnect` | Stop current session |
 | `trucvpn status` | Show connection and traffic |

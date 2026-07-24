@@ -3,14 +3,25 @@
 const { BandwidthMeter } = require("./meter");
 const { createSocks5Server } = require("./proxy/socks5");
 const { createHttpProxyServer } = require("./proxy/http");
-const { loadConfig, saveSession, loadSession } = require("./config");
+const { loadConfig, saveSession, loadSession, balancerOptions } = require("./config");
 const { listExits, pickExit, findExit } = require("./catalog");
+const { SessionTracker } = require("./balancer");
 
 /** In-process active VPN session (one per CLI process). */
 let active = null;
 
+/**
+ * Exits this process has placed connections on. The catalog will not reflect
+ * them until the share node re-reports, so the balancer counts them locally.
+ */
+const tracker = new SessionTracker();
+
 function getActive() {
   return active;
+}
+
+function getTracker() {
+  return tracker;
 }
 
 async function connect({ exitId, region, json } = {}) {
@@ -21,7 +32,9 @@ async function connect({ exitId, region, json } = {}) {
   const exits = await listExits(config);
   let exit = exitId ? findExit(exits, exitId) : null;
   if (!exit) {
-    exit = pickExit(exits, region || config.preferredRegion);
+    exit = pickExit(exits, region || config.preferredRegion, balancerOptions(config), {
+      tracker
+    });
   }
   if (!exit) {
     throw new Error("no exit selected");
@@ -101,6 +114,7 @@ async function connect({ exitId, region, json } = {}) {
   };
 
   active = session;
+  tracker.place(exit.id);
   saveSession({
     id: session.id,
     connected_at: session.connected_at,
@@ -125,6 +139,7 @@ async function disconnect() {
     return { connected: false };
   }
   const snap = active.status();
+  tracker.release(active.requested_exit ? active.requested_exit.id : active.exit.id);
   try {
     active.servers.socks.close();
   } catch {
@@ -191,6 +206,7 @@ function tcpOpen(host, port, timeoutMs) {
 
 module.exports = {
   getActive,
+  getTracker,
   connect,
   disconnect,
   status,

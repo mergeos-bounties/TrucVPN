@@ -2,6 +2,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { chooseExit, rankExits } = require("./balancer");
 
 const SAMPLE = path.join(__dirname, "..", "data", "exits.sample.json");
 
@@ -114,28 +115,24 @@ async function listExits(config) {
   return [...byId.values()];
 }
 
-function pickExit(exits, preferredRegion = "auto") {
-  if (!exits.length) {
+/**
+ * Pick an exit for a new connection.
+ *
+ * Latency and load still decide, but the choice is made by the balancer: it
+ * skips exits that cannot take the connection and spreads the ones that can,
+ * instead of handing every consumer the same argmin over a snapshot.
+ * See docs/load-balancing.md.
+ */
+function pickExit(exits, preferredRegion = "auto", options = {}, context = {}) {
+  if (!Array.isArray(exits) || !exits.length) {
     throw new Error("no exits available");
   }
-  let pool = exits.filter((e) => e.protocol !== "direct");
-  if (preferredRegion && preferredRegion !== "auto") {
-    const region = preferredRegion.toLowerCase();
-    const filtered = pool.filter(
-      (e) => String(e.region || "").toLowerCase() === region || String(e.id).includes(region)
-    );
-    if (filtered.length) {
-      pool = filtered;
-    }
-  }
-  if (!pool.length) {
-    pool = exits;
-  }
-  return pool.slice().sort((a, b) => {
-    const la = Number(a.latency_ms || 9999) + Number(a.load || 0) * 100;
-    const lb = Number(b.latency_ms || 9999) + Number(b.load || 0) * 100;
-    return la - lb;
-  })[0];
+  return chooseExit(exits, options, { ...context, region: preferredRegion });
+}
+
+/** Scored view of the catalog: what the balancer would consider, and why. */
+function rankCatalog(exits, options = {}, context = {}) {
+  return rankExits(exits, options, context);
 }
 
 function findExit(exits, idOrName) {
@@ -171,6 +168,7 @@ module.exports = {
   discoverShareExits,
   listExits,
   pickExit,
+  rankCatalog,
   findExit,
   summarizeRegions
 };

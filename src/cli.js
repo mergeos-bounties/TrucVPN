@@ -1,7 +1,8 @@
 "use strict";
 
-const { loadConfig, saveConfig } = require("./config");
-const { listExits, pickExit, findExit, sampleExits, summarizeRegions } = require("./catalog");
+const { loadConfig, saveConfig, balancerOptions } = require("./config");
+const { listExits, pickExit, rankCatalog, findExit, sampleExits, summarizeRegions } = require("./catalog");
+const { simulate, STRATEGIES } = require("./balancer");
 const session = require("./session");
 const { startControlDaemon } = require("./dashboard");
 const { formatBytes } = require("./meter");
@@ -25,6 +26,8 @@ async function main(argv) {
       return listCommand(flags);
     case "regions":
       return regionsCommand(flags);
+    case "balance":
+      return balanceCommand(flags);
     case "connect":
       return connectCommand(flags);
     case "disconnect":
@@ -51,8 +54,10 @@ function help() {
 Usage:
   trucvpn version
   trucvpn configure [--socks-port N] [--http-port N] [--dashboard-host HOST] [--dashboard-port N] [--share-url URL] [--region CODE]
-  trucvpn list [--json]
+                    [--balance-strategy NAME] [--saturation-load 0..1] [--latency-weight MS]
+  trucvpn list [--balance] [--json]
   trucvpn regions [--json]
+  trucvpn balance [--count N] [--region CODE] [--strategy NAME] [--seed N] [--json]
   trucvpn connect [--exit ID] [--region CODE] [--json]
   trucvpn disconnect [--json]
   trucvpn status [--json]
@@ -88,6 +93,19 @@ function configure(flags) {
   if (flags.region) {
     updates.preferredRegion = String(flags.region);
   }
+  if (flags["balance-strategy"]) {
+    const strategy = String(flags["balance-strategy"]);
+    if (!STRATEGIES.includes(strategy)) {
+      throw new Error(`unknown balance strategy: ${strategy} (use: ${STRATEGIES.join(", ")})`);
+    }
+    updates.balanceStrategy = strategy;
+  }
+  if (flags["saturation-load"]) {
+    updates.balanceSaturationLoad = Number(flags["saturation-load"]);
+  }
+  if (flags["latency-weight"]) {
+    updates.balanceLatencyWeightMs = Number(flags["latency-weight"]);
+  }
   if (flags["kill-switch"] === true || flags["kill-switch"] === "true") {
     updates.killSwitch = true;
   }
@@ -117,6 +135,9 @@ async function regionsCommand(flags) {
 async function listCommand(flags) {
   const cfg = loadConfig();
   const exits = await listExits(cfg);
+  if (flags.balance) {
+    return listBalanceView(cfg, exits, flags);
+  }
   if (flags.json) {
     console.log(JSON.stringify({ exits }, null, 2));
     return;
@@ -127,6 +148,71 @@ async function listCommand(flags) {
     console.log(
       `  ${e.id.padEnd(18)}  ${String(e.region || "-").padEnd(6)}  ${String(e.protocol).padEnd(12)}  ${res}  ${e.latency_ms ?? "?"}ms  ${e.name || ""}`
     );
+  }
+}
+
+/** Scored view: what the balancer sees, and which exits it will not use. */
+function listBalanceView(cfg, exits, flags) {
+  const sessions = session.getTracker().counts();
+  const ranked = rankCatalog(exits, balancerOptions(cfg), { sessions });
+  if (flags.json) {
+    console.log(JSON.stringify({ strategy: cfg.balanceStrategy, exits: ranked }, null, 2));
+    return;
+  }
+  console.log(`Balancer view (${ranked.length})  strategy=${cfg.balanceStrategy}  saturation=${cfg.balanceSaturationLoad}`);
+  for (const row of ranked) {
+    const load = row.load === null ? "  ?" : `${String(Math.round(row.load * 100)).padStart(3)}%`;
+    const state = row.eligible ? "eligible" : `skip:${row.reason}`;
+    console.log(
+      `  ${String(row.id).padEnd(18)}  ${String(row.region || "-").padEnd(6)}  ` +
+        `score ${String(row.score).padStart(7)}  ${String(row.latency_ms).padStart(5)}ms  ` +
+        `load ${load} (${row.load_basis}/${row.load_freshness})  ${state}`
+    );
+  }
+}
+
+/** Deterministic PRNG so `--seed` reproduces a distribution exactly. */
+function seededRng(seed) {
+  let state = (Number(seed) >>> 0) || 1;
+  return function next() {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Place N connections over the live catalog and show where they land. */
+async function balanceCommand(flags) {
+  const cfg = loadConfig();
+  const exits = await listExits(cfg);
+  const options = balancerOptions(cfg);
+  if (flags.strategy) {
+    const strategy = String(flags.strategy);
+    if (!STRATEGIES.includes(strategy)) {
+      throw new Error(`unknown balance strategy: ${strategy} (use: ${STRATEGIES.join(", ")})`);
+    }
+    options.strategy = strategy;
+  }
+  if (flags.seed) {
+    options.rng = seededRng(flags.seed);
+  }
+  const count = flags.count ? Number(flags.count) : 100;
+  const result = simulate(exits, count, options, {
+    region: flags.region || cfg.preferredRegion,
+    hold: Boolean(flags.hold)
+  });
+  if (flags.json) {
+    console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+  console.log(
+    `Balance plan: ${result.connections} connections  strategy=${result.strategy}  region=${flags.region || cfg.preferredRegion}`
+  );
+  for (const row of result.distribution) {
+    const bar = "#".repeat(Math.round(row.share * 40));
+    console.log(`  ${row.id.padEnd(18)}  ${String(row.connections).padStart(5)}  ${(row.share * 100).toFixed(1).padStart(5)}%  ${bar}`);
   }
 }
 
