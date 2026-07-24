@@ -2,9 +2,10 @@
 
 const http = require("node:http");
 const os = require("node:os");
-const { loadConfig, saveConfig } = require("./config");
+const { loadConfig, saveConfig, balancerOptions } = require("./config");
 const session = require("./session");
-const { listExits } = require("./catalog");
+const { listExits, rankCatalog } = require("./catalog");
+const { STRATEGIES } = require("./balancer");
 const pkg = require("../package.json");
 
 async function startDashboard({ host, port } = {}) {
@@ -43,6 +44,7 @@ async function startControlDaemon({ host, port } = {}) {
             "GET /api/health",
             "GET /api/status",
             "GET /api/exits",
+            "GET /api/balance",
             "GET /api/config",
             "POST /api/config",
             "POST /api/connect",
@@ -56,6 +58,16 @@ async function startControlDaemon({ host, port } = {}) {
       }
       if (url.pathname === "/api/exits") {
         return json(res, { exits: await listExits(loadConfig()) });
+      }
+      if (url.pathname === "/api/balance") {
+        const cfg = loadConfig();
+        const sessions = session.getTracker().counts();
+        return json(res, {
+          strategy: cfg.balanceStrategy,
+          saturation_load: cfg.balanceSaturationLoad,
+          local_sessions: sessions,
+          exits: rankCatalog(await listExits(cfg), balancerOptions(cfg), { sessions })
+        });
       }
       if (url.pathname === "/api/config" && req.method === "GET") {
         return json(res, { config: publicConfig(loadConfig()) });
@@ -164,7 +176,13 @@ function normalizeConfig(data) {
     ["kill_switch", "killSwitch"],
     ["killSwitch", "killSwitch"],
     ["consumer_mrg_per_gb", "consumerMrgPerGb"],
-    ["consumerMrgPerGb", "consumerMrgPerGb"]
+    ["consumerMrgPerGb", "consumerMrgPerGb"],
+    ["balance_strategy", "balanceStrategy"],
+    ["balanceStrategy", "balanceStrategy"],
+    ["balance_saturation_load", "balanceSaturationLoad"],
+    ["balanceSaturationLoad", "balanceSaturationLoad"],
+    ["balance_latency_weight_ms", "balanceLatencyWeightMs"],
+    ["balanceLatencyWeightMs", "balanceLatencyWeightMs"]
   ];
 
   for (const [from, to] of pairs) {
@@ -187,6 +205,27 @@ function normalizeConfig(data) {
       throw new Error("consumer_mrg_per_gb must be a positive number");
     }
     updates.consumerMrgPerGb = value;
+  }
+  if (updates.balanceStrategy !== undefined) {
+    const strategy = String(updates.balanceStrategy);
+    if (!STRATEGIES.includes(strategy)) {
+      throw new Error(`balance_strategy must be one of: ${STRATEGIES.join(", ")}`);
+    }
+    updates.balanceStrategy = strategy;
+  }
+  if (updates.balanceSaturationLoad !== undefined) {
+    const value = Number(updates.balanceSaturationLoad);
+    if (!Number.isFinite(value) || value <= 0 || value > 1) {
+      throw new Error("balance_saturation_load must be a fraction between 0 and 1");
+    }
+    updates.balanceSaturationLoad = value;
+  }
+  if (updates.balanceLatencyWeightMs !== undefined) {
+    const value = Number(updates.balanceLatencyWeightMs);
+    if (!Number.isFinite(value) || value < 0) {
+      throw new Error("balance_latency_weight_ms must be a positive number of milliseconds");
+    }
+    updates.balanceLatencyWeightMs = value;
   }
   return updates;
 }
@@ -213,7 +252,10 @@ function publicConfig(config) {
     killSwitch: config.killSwitch,
     splitTunnel: config.splitTunnel,
     preferredRegion: config.preferredRegion,
-    consumerMrgPerGb: config.consumerMrgPerGb
+    consumerMrgPerGb: config.consumerMrgPerGb,
+    balanceStrategy: config.balanceStrategy,
+    balanceSaturationLoad: config.balanceSaturationLoad,
+    balanceLatencyWeightMs: config.balanceLatencyWeightMs
   };
 }
 

@@ -17,6 +17,11 @@ const DEFAULTS = {
   killSwitch: false,
   splitTunnel: [],
   preferredRegion: "auto",
+  /** Exit load balancing - see docs/load-balancing.md. */
+  balanceStrategy: "p2c",
+  balanceLatencyWeightMs: 250,
+  balanceSaturationLoad: 0.9,
+  balanceLoadStaleMs: 60000,
   /** MRG billed to consumer per GB through residential exit (mock economy). */
   consumerMrgPerGb: 2,
   stateDir: path.join(os.homedir(), ".trucvpn")
@@ -77,8 +82,20 @@ function saveSession(session) {
   return session;
 }
 
+/** Map user config onto the balancer's option names. */
+function balancerOptions(config = {}) {
+  const cfg = { ...DEFAULTS, ...config };
+  return {
+    strategy: cfg.balanceStrategy,
+    latencyWeightMs: Number(cfg.balanceLatencyWeightMs),
+    saturationLoad: Number(cfg.balanceSaturationLoad),
+    loadStaleMs: Number(cfg.balanceLoadStaleMs)
+  };
+}
+
 module.exports = {
   DEFAULTS,
+  balancerOptions,
   statePath,
   ensureStateDir,
   loadConfig,
